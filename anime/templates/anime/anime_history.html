@@ -1,0 +1,157 @@
+{% extends 'anime/main.html' %}
+
+{% block title %}Anime History{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #010101;
+        color: #e0e0e0;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        margin-left: 50px;
+    }
+
+    h2 {
+        color: #CB2121;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        margin-bottom: 20px;
+    }
+
+    .table {
+        background-color: #101010;
+        color: #ddd;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+        border-color: #333;
+    }
+
+    .text-info {
+        color: #CB2121;
+    }
+
+    .text-info:hover {
+        color: #960000;
+    }
+
+    .table img {
+        width: 50px;
+        height: 75px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2>Modified Anime</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Genres</th>
+                <th>Release Date</th>
+                <th>Rating</th>
+                <th>Image</th>
+                <th>Episodes</th>
+                <th>Modified At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for history in modified_animes %}
+                <tr>
+                    <td>{{ history.title }}</td>
+                    <td>
+                        <div id="description-{{ history.id }}">
+                            <p id="desc-{{ history.id }}" class="truncate-text">{{ history.description|truncatewords:20 }}</p>
+                            <a href="javascript:void(0);" onclick="toggleDescription({{ history.id }})" id="toggle-{{ history.id }}" class="text-info">Show More</a>
+                            <p id="full-desc-{{ history.id }}" style="display: none;">{{ history.description }}</p>
+                        </div>
+                    </td>
+                    <td>
+                        {% for genre in history.genres.all %}
+                            <span>{{ genre.name }}</span>{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ history.release_date }}</td>
+                    <td>{{ history.rating }}</td>
+                    <td><img src="{{ history.image }}" alt="{{ history.title }}"></td>
+                    <td>{{ history.episodes }}</td>
+                    <td>{{ history.changed_at }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="8" class="text-center">No modified anime found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Deleted Anime</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Genres</th>
+                <th>Release Date</th>
+                <th>Rating</th>
+                <th>Image</th>
+                <th>Episodes</th>
+                <th>Deleted At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for history in deleted_animes %}
+                <tr>
+                    <td>{{ history.title }}</td>
+                    <td>
+                        <div id="description-{{ history.id }}">
+                            <p id="desc-{{ history.id }}" class="truncate-text">{{ history.description|truncatewords:20 }}</p>
+                            <a href="javascript:void(0);" onclick="toggleDescription({{ history.id }})" id="toggle-{{ history.id }}" class="text-info">Show More</a>
+                            <p id="full-desc-{{ history.id }}" style="display: none;">{{ history.description }}</p>
+                        </div>
+                    </td>
+                    <td>
+                        {% for genre in history.genres.all %}
+                            <span>{{ genre.name }}</span>{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ history.release_date }}</td>
+                    <td>{{ history.rating }}</td>
+                    <td><img src="{{ history.image }}" alt="{{ history.title }}"></td>
+                    <td>{{ history.episodes }}</td>
+                    <td>{{ history.changed_at }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="8" class="text-center">No deleted anime found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function toggleDescription(id) {
+        const desc = document.getElementById("desc-" + id);
+        const fullDesc = document.getElementById("full-desc-" + id);
+        const toggleLink = document.getElementById("toggle-" + id);
+
+        if (fullDesc.style.display === "none") {
+            desc.style.display = "none";
+            fullDesc.style.display = "block";
+            toggleLink.innerText = "Show Less";
+        } else {
+            fullDesc.style.display = "none";
+            desc.style.display = "block";
+            toggleLink.innerText = "Show More";
+        }
+    }
+</script>
+
+{% endblock %}

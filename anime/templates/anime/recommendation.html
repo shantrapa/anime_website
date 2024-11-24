@@ -1,0 +1,32 @@
+{% extends 'anime/main.html' %}
+
+{% block content %}
+    {% if recommendations %}
+        <div class="container my-5">
+            <h3 class="text-center mb-4 text-light">Recommended Anime</h3>
+            <div class="row row-cols-1 row-cols-md-5 g-5">
+                {% for anime in recommendations %}
+                    <div class="col">
+                        <div class="card text-light h-100">
+                            <a href="{% url 'anime_detail' anime.id %}" class="text-decoration-none text-light">
+                                <div class="card-img-wrapper">
+                                    <img src="{{ anime.image }}" class="card-img-top img-fluid" alt="{{ anime.title }}" style="object-fit: cover; width: 100%; height: 100%;">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h6 class="card-title">{{ anime.title|truncatewords:4 }}</h6>
+                                    <p class="card-subtitle text-muted">{{ anime.release_date|date:"Y" }}</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center text-muted">No anime available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="container my-5">
+            <p class="text-center text-muted">No recommendations available based on your preferences.</p>
+        </div>
+    {% endif %}
+{% endblock %}

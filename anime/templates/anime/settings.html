@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+{% extends 'anime/main.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+	<style>
+		body {
+			font-family: 'Roboto', sans-serif;
+			background-color: #010101;
+			color: #e0e0e0;
+			margin: 0;
+			padding: 0;
+		}
+
+		.container {
+			margin-top: 20px;
+			margin-left: 260px;
+		}
+
+		.card {
+			background-color: #101010;
+			border: none;
+			border-radius: 8px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+			color: #e0e0e0;
+		}
+
+		.profile-pic {
+			max-width: 200px;
+			max-height: 200px;
+			margin: 0 auto;
+			border-radius: 50%;
+			border: 3px solid #CB2121;
+		}
+
+		h3 {
+			color: #CB2121;
+			text-align: center;
+		}
+
+		a.btn-warning {
+			background-color: #CB2121;
+			color: #121212;
+			border: none;
+			border-radius: 5px;
+			transition: background-color 0.3s, transform 0.2s;
+		}
+
+		a.btn-warning:hover {
+			background-color: #960000;
+			transform: scale(1.05);
+		}
+
+		input[type="submit"] {
+			background-color: #CB2121;
+			border: none;
+			color: #121212;
+			padding: 10px 20px;
+			border-radius: 5px;
+			transition: background-color 0.3s, transform 0.2s;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #960000;
+			transform: scale(1.05);
+		}
+
+		form input[type="text"],
+		form input[type="email"],
+		form input[type="password"],
+		form input[type="date"],
+		form input[type="file"],
+		form select,
+		form textarea {
+			background-color: #2a2a2a;
+			color: #e0e0e0;
+			border: 1px solid #333;
+			border-radius: 5px;
+			margin-bottom: 15px;
+			padding: 10px;
+		}
+
+		form input[type="text"]::placeholder,
+		form input[type="email"]::placeholder,
+		form input[type="password"]::placeholder,
+		form textarea::placeholder {
+			color: #757575;
+		}
+
+		.small-card {
+			max-width: 800px;
+			margin: 0;
+		}
+	</style>
+
+	<br>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="card card-body">
+					<a class="btn btn-warning" href="{% url 'home' %}"> Go to profile</a>
+					<hr>
+					<h3>Settings</h3>
+					<hr>
+					{% if request.user.animeshnik.profile_pic and request.user.animeshnik.profile_pic.url %}
+						<img class="profile-pic" src="{{ request.user.animeshnik.profile_pic.url }}" alt="Profile Picture">
+					{% else %}
+						<img class="profile-pic" src="{% static 'images/default_profile_pic.jpg' %}" alt="Default Profile Picture">
+					{% endif %}
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="card card-body small-card">
+					<form method="POST" action="" enctype="multipart/form-data">
+						{% csrf_token %}
+						{{ form.as_p }}
+						<input class="btn btn-primary" type="submit" value="Update Information">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+</html>

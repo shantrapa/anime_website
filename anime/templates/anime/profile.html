@@ -1,0 +1,155 @@
+{% extends 'anime/main.html' %}
+{% load static %} <!-- Добавляем тег здесь -->
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4 text-light">Profile Page</h2>
+
+    <!-- Карточка профиля -->
+   <div class="card p-4 mt-4" style="background-color: #101010; color: #ddd; border: none;">
+        <div class="d-flex align-items-center">
+            {% if request.user.animeshnik.profile_pic and request.user.animeshnik.profile_pic.url %}
+                <img src="{{ request.user.animeshnik.profile_pic.url }}" alt="Profile Picture" class="img-thumbnail rounded-circle profile-avatar" style="width: 150px; height: 150px; object-fit: cover;">
+            {% else %}
+                <img src="{% static 'images/default_profile_pic.jpg' %}" alt="Default Profile Picture" class="img-thumbnail rounded-circle profile-avatar" style="width: 150px; height: 150px; object-fit: cover;">
+            {% endif %}
+            <div class="profile-info ms-3">
+                <h4 class="mb-1" style="font-weight: 600;">Username: {{ user_profile.user_name }}</h4>
+                <p class="mb-1"><strong>Age:</strong> {{ age }}</p>
+                <p class="mb-0"><strong>Email:</strong> {{ user_profile.email }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card p-4 mt-4" style="background-color: #101010; color: #ddd; border: none;">
+                <h4 class="text-center mb-4" style="color: #ddd;">My Anime List</h4>
+
+                <h5 class="text-danger">Буду смотреть ({{ status_counts.Буду_смотреть }})</h5>
+                <table class="table" style="background-color: #010101; color: #ddd;">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 75%;">Название</th>
+                            <th style="width: 10%;">Rating</th>
+                            <th style="width: 10%;">Episodes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for anime in буду_смотреть_anime %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="{% url 'anime_detail' id=anime.anime__id %}" style="color: #ddd; text-decoration: none;">{{ anime.anime__title }}</a></td>
+                            <td>{{ anime.anime__rating }}</td>
+                            <td>{{ anime.anime__episodes }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No anime in this list</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h5 class="text-warning">Смотрю ({{ status_counts.Смотрю }})</h5>
+                <table class="table" style="background-color: #010101; color: #ddd;">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 75%;">Название</th>
+                            <th style="width: 10%;">Rating</th>
+                            <th style="width: 10%;">Episodes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for anime in смотрю_anime %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="{% url 'anime_detail' id=anime.anime__id %}" style="color: #ddd; text-decoration: none;">{{ anime.anime__title }}</a></td>
+                            <td>{{ anime.anime__rating }}</td>
+                            <td>{{ anime.anime__episodes }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No anime in this list</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h5 class="text-success">Просмотрено ({{ status_counts.Просмотрено }})</h5>
+                <table class="table" style="background-color: #010101; color: #ddd;">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 75%;">Название</th>
+                            <th style="width: 10%;">Rating</th>
+                            <th style="width: 10%;">Episodes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for anime in просмотрено_anime %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="{% url 'anime_detail' id=anime.anime__id %}" style="color: #ddd; text-decoration: none;">{{ anime.anime__title }}</a></td>
+                            <td>{{ anime.anime__rating }}</td>
+                            <td>{{ anime.anime__episodes }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No anime in this list</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Секция жанров -->
+        <div class="col-md-3">
+            <div class="card p-4 mt-4" style="background-color: #101010; color: #ddd; border: none;">
+                <h5 class="text-center text-light">Genres</h5>
+                {% for genre in genre_counts %}
+                <div class="mb-3">
+                    <div class="text-light" style="font-size: 0.9rem; font-weight: 500;">{{ genre.anime__genres__name }}</div>
+                    <div class="progress" style="height: 8px; background-color: #555;">
+                        <div class="progress-bar glow-progress" role="progressbar"
+                             style="width: {{ genre.width }}%;"
+                             aria-valuenow="{{ genre.count }}" aria-valuemin="0" aria-valuemax="{{ max_genre_count }}">
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted text-center">No genres found</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glow-progress {
+        background-color: #CB2121;
+        box-shadow: 0px 0px 8px rgba(203, 33, 33, 0.7), 0px 0px 15px rgba(203, 33, 33, 0.5);
+    }
+
+    .table {
+        border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #333;
+    }
+
+    .table thead th {
+        border-bottom: 2px solid #555;
+    }
+
+    .profile-info {
+        margin-left: 20px;
+    }
+</style>
+{% endblock %}

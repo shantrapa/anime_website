@@ -1,0 +1,44 @@
+{% extends 'anime/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container welcome-section">
+    <h1 class="mt-5 mb-4">Результаты поиска</h1>
+    <p>{{ message }}</p>
+</div>
+
+<div class="container search-bar">
+    <form action="{% url 'anime_search' %}" method="post">
+        {% csrf_token %}
+        <div class="input-group mb-4">
+            <input type="text" name="title" class="form-control" placeholder="Введите название аниме">
+            <button class="btn btn-primary" type="submit">Искать</button>
+        </div>
+    </form>
+</div>
+
+<div class="container top-anime">
+    <h3 class="my-4">{{ message }}</h3>
+    <div class="row">
+        {% if anime_list %}
+            {% for anime in anime_list %}
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">    
+                    <img src="{{ anime.image }}" class="card-img-top" alt="{{ anime.title }}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ anime.title }}</h5>
+                        <a href="{% url 'anime_detail' anime.id %}" class="btn btn-dark">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Ничего не найдено.</p>
+        {% endif %}
+    </div>
+</div>
+
+<footer class="footer mt-4 py-4 bg-dark text-white text-center">
+    <p>&copy; 2023 Animeflix. Все права защищены. Присоединяйтесь к нам в увлекательном мире аниме!</p>
+</footer>
+{% endblock %}
