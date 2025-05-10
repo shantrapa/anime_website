@@ -1,0 +1,64 @@
+name: CI/CD pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  sast:
+    name: Static Code Analysis (SAST)
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Run Bandit (Python SAST)
+      run: |
+        pip install bandit
+        bandit -r . > bandit-report.txt || true
+    - name: Upload Bandit Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: bandit-report
+        path: bandit-report.txt
+
+  build-and-deploy:
+    name: Build and Deploy
+    needs: sast
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build step (placeholder)
+      run: echo "Simulate build/deploy"
+
+  dast:
+    name: Dynamic App Security Testing (DAST)
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Start vulnerable app (optional)
+      run: |
+        docker pull bkimminich/juice-shop
+        docker run -d -p 3000:3000 --name juice bkimminich/juice-shop
+        sleep 20
+
+    - name: Run OWASP ZAP Scan
+      uses: zaproxy/action-baseline@v0.10.0
+      with:
+        target: 'http://localhost:3000'
+        fail_action: false
+    - name: Upload ZAP Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: zap-report
+        path: zap-report.html
